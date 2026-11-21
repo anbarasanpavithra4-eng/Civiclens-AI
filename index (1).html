@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CivicLens AI — Demo</title>
+<style>
+:root{--bg:#081426;--panel:#10233d;--panel2:#142b49;--text:#edf5ff;--muted:#9db0c9;--blue:#4f8cff;--cyan:#55d6e8;--green:#44d18a;--border:#284363}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(140deg,#071222,#102744);color:var(--text);font:15px/1.5 system-ui,Arial,sans-serif}
+header{padding:20px max(18px,calc((100% - 1120px)/2));display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);background:#081426dd;position:sticky;top:0;z-index:2}
+.brand{font-size:20px;font-weight:800;letter-spacing:.4px}.brand span{color:var(--cyan)}.pill{border:1px solid #3976bc;color:#b9d7ff;padding:5px 10px;border-radius:99px;font-size:12px}
+main{max-width:1120px;margin:28px auto;padding:0 18px}.hero{padding:26px;border:1px solid var(--border);border-radius:22px;background:linear-gradient(120deg,#142f51,#10223a);margin-bottom:22px}
+h1{font-size:clamp(28px,5vw,42px);line-height:1.1;margin:8px 0}.sub{color:var(--muted);max-width:700px}.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}.card{background:#10233df2;border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:18px}
+h2{font-size:18px;margin:0 0 14px}.muted{color:var(--muted);font-size:13px}label{display:block;margin:12px 0 6px;color:#c6d7ed;font-size:13px}
+input,select,textarea{width:100%;padding:12px;border:1px solid #355273;background:#09192c;color:var(--text);border-radius:10px;font:inherit}
+textarea{min-height:85px;resize:vertical}button{border:0;border-radius:10px;background:var(--blue);color:white;font-weight:700;padding:11px 16px;cursor:pointer}button.secondary{background:#203b5c;border:1px solid #45678e}button:disabled{opacity:.5;cursor:not-allowed}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.preview{width:100%;max-height:230px;object-fit:contain;background:#071426;border:1px dashed #45678e;border-radius:12px;margin-top:12px;display:none}
+.result{background:#0a1a2d;border:1px solid #355273;border-radius:12px;padding:14px;margin-top:14px;display:none}
+.tag{display:inline-block;background:#183b5d;color:#bfe8ff;border-radius:99px;padding:4px 9px;font-size:12px;margin:3px 4px 3px 0}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.stat{padding:13px;background:#0a1a2d;border:1px solid var(--border);border-radius:12px}.num{font-size:25px;font-weight:800;color:var(--cyan)}
+.report{border:1px solid var(--border);padding:12px;border-radius:12px;margin-top:10px}.status{color:#9bd9ff;font-size:12px}.note{background:#302b19;border:1px solid #786334;color:#f8e6ad;padding:12px;border-radius:12px;font-size:13px;margin-top:12px}
+footer{color:var(--muted);text-align:center;padding:25px;font-size:12px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}header{position:static}.statgrid{grid-template-columns:repeat(3,1fr)}}
+</style></head>
+<body>
+<header><div class="brand">◉ <span>CivicLens</span> AI</div><div class="pill">ORBIX 2026 • DEMO PROTOTYPE</div></header>
+<main>
+<section class="hero"><div class="pill">COMMUNITY ISSUE INTELLIGENCE</div><h1>See the Problem.<br><span style="color:var(--cyan)">Report It Smart.</span></h1><p class="sub">Upload a photo, review an AI-style issue suggestion, create a structured report and track it. This prototype demonstrates the workflow; it does not contact a municipal authority.</p></section>
+<div class="grid">
+<section>
+<div class="card">
+<h2>① Report a community issue</h2>
+<p class="muted">Choose a photo and add a general area or landmark. Avoid entering private home addresses or personal details.</p>
+<label for="photo">Issue photo</label><input id="photo" type="file" accept="image/*"><img id="preview" class="preview" alt="Selected issue preview">
+<label for="area">General area / landmark</label><input id="area" placeholder="Example: Near Central Bus Stand">
+<label for="category">Issue type (optional)</label><select id="category"><option value="auto">Let the demo suggest</option><option>Pothole / road damage</option><option>Garbage overflow</option><option>Water leakage</option><option>Broken streetlight</option><option>Blocked drainage</option><option>Other</option></select>
+<div class="actions"><button id="analyse">Analyse image</button><button class="secondary" id="clear">Clear</button></div>
+<div class="result" id="analysis"></div>
+</div>
+<div class="card">
+<h2>② Review complaint</h2>
+<label for="title">Complaint title</label><input id="title" placeholder="Generated after analysis">
+<label for="desc">Description</label><textarea id="desc" placeholder="Review and edit the suggested description..."></textarea>
+<label for="priority">Priority</label><select id="priority"><option>Medium</option><option>Low</option><option>High</option></select>
+<div class="actions"><button id="submit">Submit demo report</button></div>
+<p class="muted">Submitting stores a sample report only in this browser session.</p>
+</div>
+</section>
+<aside>
+<div class="card"><h2>Community dashboard</h2><div class="statgrid"><div class="stat"><div class="num" id="total">0</div><div class="muted">Reports</div></div><div class="stat"><div class="num" id="open">0</div><div class="muted">Open</div></div><div class="stat"><div class="num" id="resolved">0</div><div class="muted">Resolved</div></div></div><div class="note">Demo data only. Counts are based on reports created in this browser.</div></div>
+<div class="card"><h2>Recent reports</h2><div id="reports"><p class="muted">No reports yet. Analyse an image and submit a demo report.</p></div></div>
+<div class="card"><h2>How it works</h2><p><span class="tag">Photo</span> → <span class="tag">Issue suggestion</span> → <span class="tag">Complaint draft</span> → <span class="tag">Tracking</span></p><p class="muted">The current prototype uses a transparent demo classifier based on the selected issue type. A production version can connect a computer-vision model and secure backend API.</p></div>
+</aside></div></main>
+<footer>CivicLens AI • Student hackathon prototype • No official government integration</footer>
+<script>
+const $=id=>document.getElementById(id);let currentFile=null;let reports=[];
+$("photo").addEventListener("change",e=>{currentFile=e.target.files[0];if(currentFile){const u=URL.createObjectURL(currentFile);$("preview").src=u;$("preview").style.display="block";}});
+const suggestions=[
+ {name:"Pothole / road damage",keywords:["road","pothole","street"],priority:"High",why:"Road damage may affect safe travel; verify the location and severity."},
+ {name:"Garbage overflow",keywords:["garbage","waste","bin"],priority:"Medium",why:"Accumulated waste may affect cleanliness and public health; verify the extent."},
+ {name:"Water leakage",keywords:["water","leak","pipe"],priority:"High",why:"Water leakage may waste water or affect nearby areas; verify whether it is active."},
+ {name:"Broken streetlight",keywords:["light","lamp","streetlight"],priority:"Medium",why:"Poor lighting may reduce visibility; verify whether the light is not working."},
+ {name:"Blocked drainage",keywords:["drain","drainage","sewage"],priority:"High",why:"Blocked drainage may cause waterlogging; verify the situation."},
+ {name:"Other civic issue",keywords:[],priority:"Medium",why:"The issue needs a human review before its category and urgency are confirmed."}
+];
+function classify(){let chosen=$("category").value;let s=chosen==="auto"?null:suggestions.find(x=>x.name===chosen);if(!s){let name=(currentFile?.name||"").toLowerCase();s=suggestions.find(x=>x.keywords.some(k=>name.includes(k)))||suggestions[5];}
+return s;}
+$("analyse").onclick=()=>{if(!currentFile){alert("Please choose an image first.");return;}let s=classify();let area=$("area").value.trim()||"Area not specified";$("title").value=s.name+" reported near "+area;$("desc").value="A possible "+s.name.toLowerCase()+" issue was reported near "+area+". Please inspect and verify the issue."; $("priority").value=s.priority;
+$("analysis").style.display="block";$("analysis").innerHTML="<strong>Demo analysis suggestion</strong><br><span class='tag'>"+s.name+"</span><span class='tag'>Suggested priority: "+s.priority+"</span><p class='muted'>"+s.why+"</p><p class='muted'>This is a demonstration suggestion, not verified computer-vision output. Confirm or edit it before submitting.</p>";};
+$("submit").onclick=()=>{if(!$("title").value.trim()){alert("Analyse an image and review the complaint first.");return;}let r={id:"CL-"+String(Date.now()).slice(-6),title:$("title").value,area:$("area").value||"Not specified",priority:$("priority").value,status:"Submitted",date:new Date().toLocaleString()};reports.unshift(r);render();$("analysis").style.display="none";};
+function render(){$("total").textContent=reports.length;$("open").textContent=reports.filter(r=>r.status!=="Resolved").length;$("resolved").textContent=reports.filter(r=>r.status==="Resolved").length;$("reports").innerHTML=reports.length?reports.map((r,i)=>`<div class="report"><strong>${escapeHtml(r.title)}</strong><div class="muted">${escapeHtml(r.area)} • ${escapeHtml(r.date)}</div><div><span class="tag">${escapeHtml(r.priority)} priority</span><span class="status">${escapeHtml(r.status)}</span></div><div class="actions"><button class="secondary" onclick="advance(${i})">Advance demo status</button></div></div>`).join(""):"<p class='muted'>No reports yet.</p>";}
+function advance(i){let states=["Submitted","Under Review","In Progress","Resolved"];let r=reports[i];r.status=states[Math.min(states.indexOf(r.status)+1,3)];render();}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+$("clear").onclick=()=>{$("photo").value="";$("preview").style.display="none";$("analysis").style.display="none";$("title").value="";$("desc").value="";currentFile=null;};
+</script></body></html>
